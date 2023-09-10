@@ -1,5 +1,5 @@
 ---
-title: "Untitled"
+title: "Assignment2"
 author: "Shaya Engelman"
 date: "2023-09-10"
 output: html_document
@@ -13,14 +13,36 @@ library(dotenv)
 ```
 
 ## R Markdown
+
 ```{r}
 dotenv::load_dot_env()
 password <- Sys.getenv("DATABASE_PASSWORD")
+
 localhost <- dbConnect(RMySQL::MySQL(),dbname='cuny_sps_msds',username='shayaeng',password=password, host='localhost',port=3306)
 knitr::opts_chunk$set(connection = "localhost")
+
+
+```
+
+```{sql connection=localhost}
+CREATE TABLE `movie_rankings` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `movie_name` varchar(100) DEFAULT NULL,
+  `score_1` int DEFAULT NULL,
+  `score_2` int DEFAULT NULL,
+  `score_3` int DEFAULT NULL,
+  `score_4` int DEFAULT NULL,
+  `score_5` int DEFAULT NULL,
+  PRIMARY KEY (`id`)
+);
+```
+```{sql connection=localhost}
+INSERT INTO movie_rankings (`movie_name`,`score_1`,`score_2`,`score_3`,`score_4`,`score_5`) VALUES ('Avatar: The Way of Water',1,2,0,3,0), ('Oppenheimer',0,1,1,3,1), ('Barbie',4,1,1,0,0), ('Meg 2',1,4,1,0,0), ('Sound of Freedom',1,1,0,2,2);
+```
+
+```{R}
 movies <- as_tibble(DBI::dbReadTable(localhost,"movie_rankings"))
 movies %>% slice(sample(1:10000,5))
-
 ```
 
 
