@@ -1,0 +1,43 @@
+---
+title: "Untitled"
+author: "Shaya Engelman"
+date: "2023-09-10"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(RMySQL)
+library(tidyverse)
+library(dotenv)
+```
+
+## R Markdown
+```{r}
+dotenv::load_dot_env()
+password <- Sys.getenv("DATABASE_PASSWORD")
+localhost <- dbConnect(RMySQL::MySQL(),dbname='cuny_sps_msds',username='shayaeng',password=password, host='localhost',port=3306)
+knitr::opts_chunk$set(connection = "localhost")
+movies <- as_tibble(DBI::dbReadTable(localhost,"movie_rankings"))
+movies %>% slice(sample(1:10000,5))
+
+```
+
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
