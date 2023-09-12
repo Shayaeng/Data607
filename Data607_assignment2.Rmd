@@ -46,26 +46,26 @@ CREATE TABLE `movie_rankings` (
 );
 ```
 
-Now, we'll add the rankings into the table
+Now, I will add the rankings into the table
 
 ```{sql connection=localhost}
 INSERT INTO movie_rankings (`movie_name`,`score_1`,`score_2`,`score_3`,`score_4`,`score_5`) VALUES ('Avatar: The Way of Water',1,2,0,3,0), ('Oppenheimer',0,1,1,3,1), ('Barbie',4,1,1,0,0), ('Meg 2',1,4,1,0,0), ('Sound of Freedom',1,1,0,2,2), ('Top Gun: Maverick',0,1,2,0,3);
 ```
 
-Now we have a SQL table with the results of the survey. We can now read it into our R project and manipulate the data using R.
+Now I have a SQL table with the results of the survey. I can now read it into the R project and manipulate the data using R.
 
 ```{R}
 movies <- as_tibble(DBI::dbReadTable(localhost,"movie_rankings"))
 movies %>% slice(sample(1:10000,5))
 ```
 
-Once we have our table saved to the current environment, we should close our connection to the SQL database.
+Once I have our table saved to the current environment, I will close our connection to the SQL database.
 
 ```{r disconnect}
 dbDisconnect (localhost) 
 ```
 
-Now let's look at the table.
+Now I'lllook at the table.
 
 ```{r print-table}
 movies <- movies %>% rename('Movie' = movie_name, '1 Star' = score_1, '2 Stars' = score_2, '3 Stars' = score_3, '4 Stars' = score_4, '5 Stars' = score_5)
