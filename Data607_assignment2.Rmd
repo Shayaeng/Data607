@@ -88,7 +88,7 @@ The drawback of this is that it obviously takes the person being asked to rate t
 
 ## Handling Missing Data
 
-Perhaps because of the simple question I asked, all six people answered about all six movies quite quickly. I myself however, have only watched two of them. I watched Top Gun: Maverick, and Avatar: The Way of Water. I would rank them both a 5/5.
+Perhaps because of the simple question I asked, all six people answered about all six movies quite quickly (I also suspect that they mostly made stuff up, I mentioned that I don't really care if it's true or not and I think they took that to mean to answer about all the movies.). I myself however, have only watched two of them. I watched Top Gun: Maverick, and Avatar: The Way of Water. I would rank them both a 5/5.
 
 ```{r add-my-rankings}
 
