@@ -11,12 +11,15 @@ knitr::opts_chunk$set(echo = TRUE)
 library(RCurl)
 library(dplyr)
 library(gt)
+library(stringr)
 ```
 
 ## Assignment 3
+
 Answer the following questions
 
 ## Question #1
+
 Provide code that identifies the majors that contain either "DATA" or "STATISTICS".
 
 ```{r}
@@ -34,15 +37,65 @@ dfdata_statistics_majors |>
 ```
 
 ## Question #2
-Write code that transforms the data below:
-[1] "bell pepper"  "bilberry"     "blackberry"   "blood orange"
-[5] "blueberry"    "cantaloupe"   "chili pepper" "cloudberry"  
-[9] "elderberry"   "lime"         "lychee"       "mulberry"    
-[13] "olive"        "salal berry"
-Into a format like this:
-c("bell pepper", "bilberry", "blackberry", "blood orange", "blueberry", "cantaloupe", "chili pepper", "cloudberry", "elderberry", "lime", "lychee", "mulberry", "olive", "salal berry")
+
+Write code that transforms the data below: [1] "bell pepper" "bilberry" "blackberry" "blood orange" [5] "blueberry" "cantaloupe" "chili pepper" "cloudberry"\
+[9] "elderberry" "lime" "lychee" "mulberry"\
+[13] "olive" "salal berry" Into a format like this: c("bell pepper", "bilberry", "blackberry", "blood orange", "blueberry", "cantaloupe", "chili pepper", "cloudberry", "elderberry", "lime", "lychee", "mulberry", "olive", "salal berry")
+
+```{r}
+#create a vector with the data
+fruits <- c("bell pepper", "bilberry", "blackberry", "blood orange", "blueberry", "cantaloupe", "chili pepper", "cloudberry", "elderberry", "lime", "lychee","mulberry", "olive", "salal berry")
+
+# Convert the vector to a string
+string_fruits <-
+  paste("c(", #adding the beginning of the vector
+        paste0('"', fruits, '"', collapse = ", "), #adding the elements of the vector with quotations and a comma in between
+        ")", #closing the vector
+        sep = "") #removing the space between the vectors
+
+# Print the string using cat() to avoid getting a line number and extra quotations
+cat(string_fruits, "\n")
+
+```
+
+## Question #3
+
+Describe, in words, what these expressions will match:
+
+(I am assuming the fact that some of these have quotations and double backslashes and some don't is not relevant and all should have double backslashes since r would need two to recognize it as a literal backslash)
+
+1.  (.)\\1\\1
+
+This regex matches any three characters in a row, like aaa. The \\1 means take the first character and make sure it's the second one as well. Same for the next \\1
+
+2.  "(.)(.)\\2\\1"
+
+This regex matches any two characters followed by their reverse, like abba. The \\2 means find if the third character matches the second. The following \\1 means find the fourth character matching the first.
+
+3.  (..)\\1
+
+This regex matches two characters that are repeated, like haha. The (..) means group any two characters as one and the \\1 means see if that group is repeated.
+
+4.  "(.).\\1.\\1"
+
+This regex will look for the same character being repeated in alternating spots, like a?a?a. The (.) means take tht character and remembered it. The next . means not to care what that character is, followed by \\1 means look for that remembered character and see if it matches. This is followed by another . and another \\1, both meaning the same thing as the first time.
+
+5.  "(.)(.)(.).\*\\3\\2\\1"
+
+This regex is kind of similar to #2 with some differences. First of all it is three characters instaed of two followed by anything in between and then followed by the original three in reverse order, like abc?cba. Importantly, the middle .\* can represent any amount of characters including zero. So it can abccba and it can be abc???...cba or anything in between.
+
+## Question #5
+
+Construct regular expressions to match words that:
+1. Start and end with the same character.
+
+```{r}
+regex <- 
+```
+
+2. Contain a repeated pair of letters (e.g. "church" contains "ch" repeated twice.)
+3. Contain one letter repeated in at least three places (e.g. "eleven" contains three   "e"s.)
 
 ```{r}
 
 ```
-
