@@ -1,0 +1,48 @@
+---
+title: "Assignment 3"
+author: "Shaya Engelman"
+date: "2023-09-20"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(RCurl)
+library(dplyr)
+library(gt)
+```
+
+## Assignment 3
+Answer the following questions
+
+## Question #1
+Provide code that identifies the majors that contain either "DATA" or "STATISTICS".
+
+```{r}
+x <- getURL("https://raw.githubusercontent.com/fivethirtyeight/data/master/college-majors/majors-list.csv")
+majors <- read.csv(text = x)
+
+# At first, I had it as a vector and then decided to have it as a dataframe to display it as a table
+#major <- majors$Major
+#vdata_statistics_majors <- grep(pattern = "data|statistics", major, ignore.case = TRUE)
+dfdata_statistics_majors <- majors %>% filter(grepl(pattern = "data|statistics", Major, ignore.case = TRUE))
+
+dfdata_statistics_majors |>
+    gt() %>%
+    tab_options(table.font.size = px(8)) 
+```
+
+## Question #2
+Write code that transforms the data below:
+[1] "bell pepper"  "bilberry"     "blackberry"   "blood orange"
+[5] "blueberry"    "cantaloupe"   "chili pepper" "cloudberry"  
+[9] "elderberry"   "lime"         "lychee"       "mulberry"    
+[13] "olive"        "salal berry"
+Into a format like this:
+c("bell pepper", "bilberry", "blackberry", "blood orange", "blueberry", "cantaloupe", "chili pepper", "cloudberry", "elderberry", "lime", "lychee", "mulberry", "olive", "salal berry")
+
+```{r}
+
+```
+
