@@ -26,7 +26,7 @@ Provide code that identifies the majors that contain either "DATA" or "STATISTIC
 x <- getURL("https://raw.githubusercontent.com/fivethirtyeight/data/master/college-majors/majors-list.csv")
 majors <- read.csv(text = x)
 
-# At first, I had it as a vector and then decided to have it as a dataframe to display it as a table
+#At first, I had it as a vector and then decided to have it as a dataframe to display it as a table
 #major <- majors$Major
 #vdata_statistics_majors <- grep(pattern = "data|statistics", major, ignore.case = TRUE)
 dfdata_statistics_majors <- majors %>% filter(grepl(pattern = "data|statistics", Major, ignore.case = TRUE))
@@ -46,14 +46,14 @@ Write code that transforms the data below: [1] "bell pepper" "bilberry" "blackbe
 #create a vector with the data
 fruits <- c("bell pepper", "bilberry", "blackberry", "blood orange", "blueberry", "cantaloupe", "chili pepper", "cloudberry", "elderberry", "lime", "lychee","mulberry", "olive", "salal berry")
 
-# Convert the vector to a string
+#Convert the vector to a string
 string_fruits <-
   paste("c(", #adding the beginning of the vector
         paste0('"', fruits, '"', collapse = ", "), #adding the elements of the vector with quotations and a comma in between
         ")", #closing the vector
         sep = "") #removing the space between the vectors
 
-# Print the string using cat() to avoid getting a line number and extra quotations
+#Print the string using cat() to avoid getting a line number and extra quotations
 cat(string_fruits, "\n")
 
 ```
