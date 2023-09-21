@@ -90,12 +90,26 @@ Construct regular expressions to match words that:
 1. Start and end with the same character.
 
 ```{r}
-regex <- 
+#\\b for boundaries before and after the words, \\w to limit it to word characters, w* to allow for any amount of other letters, \\1 to check for the grouping
+regex <- "\\b(\\w)\\w*\\1\\b"
+matches <- str_extract_all("hello everyone aha I am shaya", regex)
+matches
 ```
 
 2. Contain a repeated pair of letters (e.g. "church" contains "ch" repeated twice.)
+
+```{r}
+#\\b for boundaries, \\w* at the beginning middle and end to account for other letters in all those places, (\\w{2,}) is our grouping of any two word characters
+regex <- "\\b\\w*(\\w{2,})\\w*\\1\\w*\\b"
+matches <- str_extract_all("church test pishposh test test", regex) 
+matches
+```
+
 3. Contain one letter repeated in at least three places (e.g. "eleven" contains three   "e"s.)
 
 ```{r}
-
+#\\b for boundaries, (\\w) is grouping any character, the two times \\1 make sure the grouped character (anything really) appears at least twice more, and the 4 times w* are to allow for any amount of other letters anywhere else
+regex <- "\\b\\w*(\\w)\\w*\\1\\w*\\1\\w*\\b"
+matches <- str_extract_all("eleven seventeen eighteen test", regex)
+matches
 ```
