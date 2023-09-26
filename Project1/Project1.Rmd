@@ -57,11 +57,17 @@ for (line in chess_combined) {
 }
 
 #convert to data frame
-chess_df2 <- data.frame(do.call(rbind, chess_split))
-colnames(chess_df2) <- c('PairId','PlayerName', 'Points', 'Round1', 'Round2', 'Round3', 'Round4', 'Round5', 'Round6', 'Round7', 'State', 'ChessId', 'PreRating', 'PostRating', '?', 'Result1', 'Result2', 'Result3', 'Result4', 'Result5', 'Result6', 'Result7')
-chess_df2$PreRating <- substring(chess_df2$PreRating, first = 4)
+chess_df <- data.frame(do.call(rbind, chess_split))
+colnames(chess_df) <- c('PairId','PlayerName', 'Points', 'Round1', 'Round2', 'Round3', 'Round4', 'Round5', 'Round6', 'Round7', 'State', 'ChessId', 'PreRating', 'PostRating', '?', 'Result1', 'Result2', 'Result3', 'Result4', 'Result5', 'Result6', 'Result7')
+chess_df$PreRating <- sub("^[^[:space:]]*\\s*", "", chess_df$PreRating)
 
-Subset_df <- chess_df2[, c('PairId','PlayerName', 'State', 'Points', 'Round1', 'Round2', 'Round3', 'Round4', 'Round5', 'Round6', 'Round7', 'PreRating')]
+#subset relevant columns
+subset_df <- chess_df[, c('PairId','PlayerName', 'State', 'Points', 'Round1', 'Round2', 'Round3', 'Round4', 'Round5', 'Round6', 'Round7', 'PreRating')]
+subset_df$PreRating <- sub("P.*", "", subset_df$PreRating)
+#subset_df$Round1 <- sub("^[^[:space:]]*\\s*", "", subset_df$Round1)
+#subset_df$Round2 <- sub("^[^[:space:]]*\\s*", "", subset_df$Round2)
+subset_df[c('Round1', 'Round2','Round3', 'Round4', 'Round5', 'Round6', 'Round7')] <- lapply(subset_df[c('Round1', 'Round2','Round3', 'Round4', 'Round5', 'Round6', 'Round7')], function(x) sub("^[^[:space:]]*\\s*", "", x))
+
 ```
 
 
