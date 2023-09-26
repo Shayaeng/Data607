@@ -58,21 +58,8 @@ for (line in chess_combined) {
 
 #convert to data frame
 chess_df <- data.frame(do.call(rbind, chess_split))
+colnames(chess_df) <- c('ID','PlayerName', 'Points', 'Round1', 'Round2', 'Round3', 'Round4', 'Round5', 'Round6', 'Round7', 'State', 'IdRatingPrePost', '?', 'Result1', 'Result2', 'Result3', 'Result4', 'Result5', 'Result6', 'Result7')
 ```
 
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
-```
-
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+When you click the **Knit** button a document will be generated that includes both 
