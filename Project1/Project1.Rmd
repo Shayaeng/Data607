@@ -1,0 +1,64 @@
+---
+title: "Chess Rankings"
+author: "Shaya Engelman"
+date: "2023-09-24"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+```{r}
+#load required libraries
+library(RCurl)
+
+```
+
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+```{r}
+#chesstxt <- getURL("https://raw.githubusercontent.com/Shayaeng/Data607/main/Project1/chess.txt")
+chess_raw <- readLines("chess.txt")
+
+chess_filtered <- c()
+
+#First, let's get rid of those '---' lines
+for (line in chess_raw) {
+  if (!grepl("^-+$", line)) {
+    chess_filtered <- c(chess_filtered, line)
+  }
+}
+
+#Now we'll remove the first two lines
+chess_filtered <- chess_filtered[-(1:2)]
+
+#Next, let's combine each of the two lines per record
+chess_combined <- c()
+for (i in seq(1, length(chess_filtered), by = 2)) {
+  bottom_part <- chess_filtered[i]
+  top_part <- chess_filtered[i + 1]
+  combined_line <- paste(bottom_part, top_part)
+  chess_combined <- c(chess_combined, combined_line)
+}
+  
+
+```
+
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
