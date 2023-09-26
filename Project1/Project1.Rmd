@@ -13,6 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r}
 #load required libraries
 library(RCurl)
+library(stringr)
 
 ```
 
@@ -43,7 +44,20 @@ for (i in seq(1, length(chess_filtered), by = 2)) {
   chess_combined <- c(chess_combined, combined_line)
 }
   
+#for (line in chess_combined) {
+# print(line)
+#}
 
+#split the lines by their records
+chess_split <- c()
+for (line in chess_combined) {
+  split_line <- strsplit(line, split = '\\|')
+  trimmed_line <- lapply(split_line, str_trim)
+  chess_split <- c(chess_split, trimmed_line)
+}
+
+#convert to data frame
+chess_df <- data.frame(do.call(rbind, chess_split))
 ```
 
 
