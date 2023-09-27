@@ -14,6 +14,7 @@ knitr::opts_chunk$set(echo = TRUE)
 #load required libraries
 library(RCurl)
 library(stringr)
+library(dplyr)
 
 ```
 
@@ -72,8 +73,33 @@ subset_df[c('Round1', 'Round2','Round3', 'Round4', 'Round5', 'Round6', 'Round7')
 subset_df[c('PairId', 'Round1', 'Round2', 'Round3', 'Round4', 'Round5', 'Round6', 'Round7')] <- lapply(subset_df[c('PairId', 'Round1', 'Round2', 'Round3', 'Round4', 'Round5', 'Round6', 'Round7')], as.integer)
 subset_df[c('Points', 'PreRating')] <- lapply(subset_df[c('Points', 'PreRating')], as.numeric)
 
+#add opponents rating
+subset_df2 <- subset_df %>%
+  left_join(subset_df[, c('PairId', 'PreRating')], by = c('Round1' = 'PairId')) %>%
+  rename(OppRound1 = PreRating.y, PreRating = PreRating.x) %>%
+  
+  left_join(subset_df[, c('PairId', 'PreRating')], by = c('Round2' = 'PairId')) %>%
+  rename(OppRound2 = PreRating.y, PreRating = PreRating.x) %>%
+  
+  left_join(subset_df[, c('PairId', 'PreRating')], by = c('Round3' = 'PairId')) %>%
+  rename(OppRound3 = PreRating.y, PreRating = PreRating.x) %>%
+  
+  left_join(subset_df[, c('PairId', 'PreRating')], by = c('Round4' = 'PairId')) %>%
+  rename(OppRound4 = PreRating.y, PreRating = PreRating.x) %>%
+  
+  left_join(subset_df[, c('PairId', 'PreRating')], by = c('Round5' = 'PairId')) %>%
+  rename(OppRound5 = PreRating.y, PreRating = PreRating.x) %>%
+  
+  left_join(subset_df[, c('PairId', 'PreRating')], by = c('Round6' = 'PairId')) %>%
+  rename(OppRound6 = PreRating.y, PreRating = PreRating.x) %>%
+  
+  left_join(subset_df[, c('PairId', 'PreRating')], by = c('Round7' = 'PairId')) %>%
+  rename(OppRound7 = PreRating.y, PreRating = PreRating.x)
 
-
+subset_df2 <- subset_df2 %>%
+  rowwise() %>%
+  mutate(OppAverage = mean(c(`OppRound1`, `OppRound2`, `OppRound3`, `OppRound4`, `OppRound5`, `OppRound6`, `OppRound7`), na.rm = TRUE))
+  
 ```
 
 
