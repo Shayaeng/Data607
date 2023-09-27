@@ -24,8 +24,8 @@ job is to create an R Markdown file that generates a .CSV file (that could for e
 with the following information for all of the players:
 Player’s Name, Player’s State, Total Number of Points, Player’s Pre-Rating, and Average Pre Chess Rating of Opponents
 ```{r}
-#chesstxt <- getURL("https://raw.githubusercontent.com/Shayaeng/Data607/main/Project1/chess.txt")
-chess_raw <- readLines("chess.txt")
+chesstxt <- getURL("https://raw.githubusercontent.com/Shayaeng/Data607/main/Project1/chess.txt")
+chess_raw <- readLines(textConnection(chesstxt))
 
 chess_filtered <- c()
 
