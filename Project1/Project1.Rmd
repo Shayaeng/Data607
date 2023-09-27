@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## R Markdown
-```{r}
+```{r warning=FALSE}
 #load required libraries
 library(RCurl)
 library(stringr)
@@ -19,7 +19,10 @@ library(dplyr)
 ```
 
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+In this project, you’re given a text file with chess tournament results where the information has some structure. Your 
+job is to create an R Markdown file that generates a .CSV file (that could for example be imported into a SQL database) 
+with the following information for all of the players:
+Player’s Name, Player’s State, Total Number of Points, Player’s Pre-Rating, and Average Pre Chess Rating of Opponents
 ```{r}
 #chesstxt <- getURL("https://raw.githubusercontent.com/Shayaeng/Data607/main/Project1/chess.txt")
 chess_raw <- readLines("chess.txt")
@@ -74,7 +77,7 @@ subset_df[c('PairId', 'Round1', 'Round2', 'Round3', 'Round4', 'Round5', 'Round6'
 subset_df[c('Points', 'PreRating')] <- lapply(subset_df[c('Points', 'PreRating')], as.numeric)
 
 #add opponents rating
-subset_df2 <- subset_df %>%
+subset_df <- subset_df %>%
   left_join(subset_df[, c('PairId', 'PreRating')], by = c('Round1' = 'PairId')) %>%
   rename(OppRound1 = PreRating.y, PreRating = PreRating.x) %>%
   
@@ -96,11 +99,14 @@ subset_df2 <- subset_df %>%
   left_join(subset_df[, c('PairId', 'PreRating')], by = c('Round7' = 'PairId')) %>%
   rename(OppRound7 = PreRating.y, PreRating = PreRating.x)
 
-subset_df2 <- subset_df2 %>%
+#add average rating
+subset_df <- subset_df %>%
   rowwise() %>%
-  mutate(OppAverage = mean(c(`OppRound1`, `OppRound2`, `OppRound3`, `OppRound4`, `OppRound5`, `OppRound6`, `OppRound7`), na.rm = TRUE))
-  
+  mutate(OppAverage = round(mean(c(`OppRound1`, `OppRound2`, `OppRound3`, `OppRound4`, `OppRound5`, `OppRound6`, `OppRound7`), na.rm = TRUE)))
+
+#select and reorder columns
+chess_final <- subset_df[, c('PlayerName', 'State', 'Points', 'PreRating', 'OppAverage')]
+
+#create the .csv file
+write.csv(chess_final, file = "chess_final.csv", row.names = FALSE)
 ```
-
-
-When you click the **Knit** button a document will be generated that includes both 
