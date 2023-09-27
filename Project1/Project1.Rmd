@@ -63,10 +63,16 @@ chess_df$PreRating <- sub("^[^[:space:]]*\\s*", "", chess_df$PreRating)
 
 #subset relevant columns
 subset_df <- chess_df[, c('PairId','PlayerName', 'State', 'Points', 'Round1', 'Round2', 'Round3', 'Round4', 'Round5', 'Round6', 'Round7', 'PreRating')]
+
+#trim the extra characters
 subset_df$PreRating <- sub("P.*", "", subset_df$PreRating)
-#subset_df$Round1 <- sub("^[^[:space:]]*\\s*", "", subset_df$Round1)
-#subset_df$Round2 <- sub("^[^[:space:]]*\\s*", "", subset_df$Round2)
 subset_df[c('Round1', 'Round2','Round3', 'Round4', 'Round5', 'Round6', 'Round7')] <- lapply(subset_df[c('Round1', 'Round2','Round3', 'Round4', 'Round5', 'Round6', 'Round7')], function(x) sub("^[^[:space:]]*\\s*", "", x))
+
+#convert the columns
+subset_df[c('PairId', 'Round1', 'Round2', 'Round3', 'Round4', 'Round5', 'Round6', 'Round7')] <- lapply(subset_df[c('PairId', 'Round1', 'Round2', 'Round3', 'Round4', 'Round5', 'Round6', 'Round7')], as.integer)
+subset_df[c('Points', 'PreRating')] <- lapply(subset_df[c('Points', 'PreRating')], as.numeric)
+
+
 
 ```
 
