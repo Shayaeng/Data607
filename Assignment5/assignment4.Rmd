@@ -1,0 +1,59 @@
+---
+title: "Assignment5"
+author: "Shaya Engelman"
+date: "2023-10-02"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(RCurl)
+library(tidyverse)
+library(dplyr)
+```
+
+```{r}
+airlines <- read.csv("https://raw.githubusercontent.com/Shayaeng/Data607/main/Assignment5/airlines.csv")
+
+print(airlines)
+```
+
+```{r}
+#name the columns without names and add values to the missing fields
+airlines <- airlines %>%
+  rename('Airline' = X, 'ArrivalStatus' = X.1) %>%
+  mutate_all(~if_else(. == "", NA, .)) %>%
+  fill(Airline, .direction = "down")
+
+#some columns had commas and are character columns
+columns_with_commas <- c('Phoenix', 'Seattle')
+
+for (column in columns_with_commas)
+  airlines[[column]] <- as.integer(gsub(",", "", airlines[[column]]))
+```
+
+```{r}
+#lengthen and widen the dataframe to make it easier to calculate the delays
+cities <- c('Los.Angeles', 'Phoenix', 'San.Diego',  'San.Francisco', 'Seattle')
+airlines_long <- airlines %>%
+  pivot_longer(cols = all_of(cities), names_to = "Destination", values_to = "Flights")
+
+airlines_wide <- airlines_long %>%
+  pivot_wider(names_from = "ArrivalStatus", values_from = "Flights")
+
+```
+
+```{r}
+#calculate delay ratios per airline
+airlines_wide <- airlines_wide %>%
+  mutate(DelayRatio = delayed/(delayed + `on time`))
+
+ggplot(airlines_wide, aes(x = Destination, y = DelayRatio, fill = Airline)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Delay Ratio by Airline",
+       y = "Delay Ratio",
+       x = "City")
+```
+
+As is clear from the above bar plot, Am West has consistently higher ratios of flights being delayed. This held true across all the cities measured. 
+
