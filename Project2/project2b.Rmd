@@ -1,0 +1,53 @@
+---
+title: "project2b"
+author: "Shaya Engelman"
+date: "2023-10-11"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(RCurl)
+library(tidyverse)
+```
+
+```{r}
+terror <- read.csv("https://raw.githubusercontent.com/Shayaeng/Data607/main/Project2/terrorist-attacks-by-method.csv")
+
+head(terror)
+
+method_columns <- colnames(terror)[grep("^Terrorist.attacks.", colnames(terror))]
+cleaned_columns <- sub("^Terrorist.attacks.", "", method_columns)
+colnames(terror)[grep("^Terrorist.attacks.", colnames(terror))] <- cleaned_columns
+countries <- unique(terror$Entity)
+
+terror_long <- pivot_longer(terror, cols = (all_of(cleaned_columns)), names_to = "method", values_to = "count")
+
+ggplot(terror_long, aes(x = method, y = count, fill = method)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Count of Terrorist Attacks by Method",
+       x = "Attack Method",
+       y = "Count") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+```{r}
+middleEast <- c('Armenia','Azerbaijan','Bahrain','Gaza Strip','Georgia','Iran','Iraq','Israel','Jordan','Kuwait','Lebanon','Oman','Qatar','Saudi Arabia','Syria','Turkey','United Arab Emirates','West Bank','Yemen')
+
+MEterror <- terror %>% filter(Entity %in% middleEast)
+
+summary_data <- MEterror %>%
+  group_by(Entity) %>%
+  summarize(across(all_of(cleaned_columns), ~ sum(., na.rm = TRUE)))
+  
+
+summary_data_long <- gather(summary_data, key = "Attack_Method", value = "Total_Attacks", -Entity)
+
+ggplot(summary_data_long, aes(x = Entity, y = Total_Attacks, fill = Attack_Method)) +
+  geom_bar(stat = "identity", position = "stack") +
+  labs(title = "Total Attacks per Country by Attack Method",
+       x = "Country",
+       y = "Total Attacks",
+       fill = "Attack Method") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
