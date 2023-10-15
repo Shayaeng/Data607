@@ -23,7 +23,11 @@ homers <- read.csv("https://raw.githubusercontent.com/Shayaeng/Data607/main/Proj
  First I will filter out the other positions and lengthen the table to have the year as a value.
 ```{r}
 homers_long <- homers %>%
-  gather(key = "Year", value = "Total_HRs", starts_with("X")) %>%
+  pivot_longer(
+    cols = starts_with("X"),
+    names_to = "Year",
+    values_to = "Total_HRs"
+  ) %>%
   mutate(Year = as.numeric(str_extract(Year, "\\d+"))) %>%
   filter(!is.na(Total_HRs) & Position == "C")
 ```
