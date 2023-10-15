@@ -7,9 +7,13 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
 library(RCurl)
 library(dplyr)
 library(stringr)
+library(tidyverse)
 ```
 For my first dataset I chose a file that contains contains participation and cost data for SNAP. The data is furthered divided by annual, state, and monthly levels categorized by persons participating, households participating, benefits provided, average monthly benefits per person and average monthly benefits per household. I am going to see if there is a relationship between the average amount per person and the total amount of participants. I found this information on data.world as an excel file that I downloaded and saved as a csv file to my GitHub repository.
 
@@ -19,7 +23,7 @@ snap <- read.csv("https://raw.githubusercontent.com/Shayaeng/Data607/main/Projec
 
 ```
 
-First I will name these columns witht the proper names and get rid of the extra rows
+First I will name these columns with the proper names and get rid of the extra rows
 
 ```{r}
 #snap <- snap %>% mutate_all(~na_if(., ""))
@@ -46,6 +50,7 @@ snap$`Average Benefit Per Person(Dollars)` <- as.numeric(gsub(",", "", snap$`Ave
 
 ggplot(data = snap, mapping = aes(x = `Average Participation(Thousands)`, y = `Average Benefit Per Person(Dollars)`)) +
   geom_point() +
-  scale_x_continuous(breaks = seq(0, 50000, by = 5000)) +  # Set intervals for x-axis
-  scale_y_continuous(breaks = seq(0, 150, by = 20)) +   # Set intervals for y-axis
+  scale_x_continuous(breaks = seq(0, 50000, by = 5000)) + 
+  scale_y_continuous(breaks = seq(0, 150, by = 20)) + 
   labs(title = "Scatter Plot with Specified Axis Intervals")
+```
