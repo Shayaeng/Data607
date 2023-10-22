@@ -71,31 +71,51 @@ books_json_unnested <- books_json_unnested %>%
   summarise(authors = paste(authors, collapse = ", ")) %>%
   ungroup()
 
-#rename columns and get rid of extra row
+#reorder the columns
+books_json_unnested <- books_json_unnested[, c(1,2,6,3,4,5)]
+
+#rename columns and get rid of extra row in html
 colnames(books_html) <- books_html[1, ]
 books_html <- books_html[-1, ]
 
 #fix author cell in xml and html
 books_xml[1, 3] <- gsub("Jordan", "Jordan, ", books_xml[1, 3])
-books_html[1, 3] <- gsub("Jordan        ", "Jordan, ", books_html[1, 3])
+books_html[1, 3] <- gsub("\\s{2,}", ", ", books_html[1, 3])
+
+# Order books_xml
+books_xml <- books_xml[order(books_xml$goodreads, decreasing = TRUE), ]
+
+# Order books_html
+books_html <- books_html[order(books_html$goodreads, decreasing = TRUE), ]
+
+# Order books_json
+books_json_unnested <- books_json_unnested[order(books_json_unnested$goodreads, decreasing = TRUE), ]
+
 ```
 
 ```{r}
-# Assuming your string is named 'your_string'
-your_string <- "Robert Jordan                 Brandon Sanderson"
+reset_row_names <- function(df) {
+  rownames(df) <- NULL  # Remove existing row names
+  rownames(df) <- seq_len(nrow(df))  # Assign new row names as a numeric sequence
+  return(df)
+}
 
-# Strip white spaces and add a comma and space
-result <- gsub("\\s+", ", ", your_string)
+# Applying the function to each data frame
+books_xml <- reset_row_names(books_xml)
+books_html <- reset_row_names(books_html)
+books_json_unnested <- reset_row_names(books_json_unnested)
 
-# Print the result
-print(result)
+# Convert json to df from tibble
+books_json <- as.data.frame(books_json_unnested)
+```
 
-books_html[1, 3] <- as.character(books_html[1, 3])
+```{r}
+# Check if all three data frames are identical
+all_identical <- identical(books_xml, books_html) && identical(books_html, books_json)
 
-# use gsub() to replace the white space with a comma and a space
-books_html[1, 3] <- gsub("Jordan        ", "Jordan, ", books_html[1, 3])
-
-# convert the character vector back to a factor
-books_html[1, 3] <- as.factor(books_html[1, 3])
+# Display the result
+print(paste("All three data frames are identical:", all_identical))
 
 ```
+
+The three tables are now identical.
