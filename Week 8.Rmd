@@ -41,22 +41,61 @@ books_json <- fromJSON("https://raw.githubusercontent.com/Shayaeng/Data607/main/
 books_xml_object <- xmlParse(getURL("https://raw.githubusercontent.com/Shayaeng/Data607/main/books.xml"))
 books_xml <- xmlToDataFrame(books_xml_object)
 
-xinfo <- xmlParse(
-  rawToChar(GET(xurl)$content)
-  )
-(xframe <- as_tibble(xmlToDataFrame(xinfo)))
 ```
 
 ```{r html}
 books_html_raw <- read_html("https://raw.githubusercontent.com/Shayaeng/Data607/main/books.html")
 
-table_data <- html_nodes(books_html, "table") %>%
+table_data <- html_nodes(books_html_raw, "table") %>%
                 html_table()
 books_html <- as.data.frame(table_data)
 ```
 
-```{r}
+```{r view tables}
 (books_json)
 (books_xml)
 (books_html)
+```
+
+By viewing the tables we can see that there are differences between the different dataframes. To make them identical, I will unnest the json file, set the first row of the html file as the column names and make the author column look the same for all three. 
+
+```{r}
+#unnest list and combine json rows
+books_json_unnested <- books_json %>%
+  unnest(authors)
+books_json_unnested <- books_json_unnested %>%
+  rename(authors = author)
+
+books_json_unnested <- books_json_unnested %>%
+  group_by(title, series, goodreads, release_year, genre) %>%
+  summarise(authors = paste(authors, collapse = ", ")) %>%
+  ungroup()
+
+#rename columns and get rid of extra row
+colnames(books_html) <- books_html[1, ]
+books_html <- books_html[-1, ]
+
+#fix author cell in xml and html
+books_xml[1, 3] <- gsub("Jordan", "Jordan, ", books_xml[1, 3])
+books_html[1, 3] <- gsub("Jordan        ", "Jordan, ", books_html[1, 3])
+```
+
+```{r}
+# Assuming your string is named 'your_string'
+your_string <- "Robert Jordan                 Brandon Sanderson"
+
+# Strip white spaces and add a comma and space
+result <- gsub("\\s+", ", ", your_string)
+
+# Print the result
+print(result)
+
+books_html[1, 3] <- as.character(books_html[1, 3])
+
+# use gsub() to replace the white space with a comma and a space
+books_html[1, 3] <- gsub("Jordan        ", "Jordan, ", books_html[1, 3])
+
+# convert the character vector back to a factor
+books_html[1, 3] <- as.factor(books_html[1, 3])
+
 ```
