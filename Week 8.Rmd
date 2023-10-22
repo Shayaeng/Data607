@@ -31,6 +31,7 @@ library(jsonlite)
 library(tidyverse)
 library(XML)
 library(rvest)
+library(RCurl)
 ```
 
 ```{r json}
