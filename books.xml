@@ -1,0 +1,33 @@
+<books>
+    <book>
+        <title>The Gathering Storm</title>
+        <series>The Wheel of Time</series>
+        <authors>
+            <author>Robert Jordan</author>
+            <author>Brandon Sanderson</author>
+        </authors>
+        <goodreads>4.4</goodreads>
+        <release_year>2009</release_year>
+        <genre>fantasy</genre>
+    </book>
+    <book>
+        <title>The Way of Kings</title>
+        <series>The Stormlight Archives</series>
+        <authors>
+            <author>Brandon Sanderson</author>
+        </authors>
+        <goodreads>4.6</goodreads>
+        <release_year>2010</release_year>
+        <genre>fantasy</genre>
+    </book>
+    <book>
+        <title>The Name of the Wind</title>
+        <series>The Kingkiller Chronicles</series>
+        <authors>
+            <author>Patrick Rothfuss</author>
+        </authors>
+        <goodreads>4.5</goodreads>
+        <release_year>2007</release_year>
+        <genre>fantasy</genre>
+    </book>
+</books>

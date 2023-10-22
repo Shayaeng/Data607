@@ -1,0 +1,41 @@
+[
+    {
+        "title": "The gathering Storm",
+        "series": "The Wheel of Time",
+        "authors": [
+            {
+                "author": "Robert Jordan"
+            },
+            {
+                "author": "Brandon Sanderson"
+            }
+        ],
+        "goodreads": "4.4",
+        "release_year": "2009",
+        "genre": "fantasy"
+    },
+    {
+        "title": "The Way of Kings",
+        "series": "The Stormlight Archives",
+        "authors": [
+            {
+                "author": "Brandon Sanderson"
+            }
+        ],
+        "goodreads": "4.6",
+        "release_year": "2010",
+        "genre": "fantasy"
+    },
+    {
+        "title": "The Name of the Wind",
+        "series": "The Kingkiller Chronicles",
+        "authors": [
+            {
+                "author": "Patrick Rothfuss"
+            }
+        ],
+        "goodreads": "4.7",
+        "release_year": "2007",
+        "genre": "fantasy"
+    }
+]
