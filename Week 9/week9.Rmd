@@ -9,61 +9,75 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
+## Assignment - Web APIs
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+The New York Times web site provides a rich set of APIs, as described here: https://developer.nytimes.com/apis
+You’ll need to start by signing up for an API key.
+Your task is to choose one of the New York Times APIs, construct an interface in R to read in the JSON data, and 
+transform it into an R DataFrame:
 
 ```{r }
-library(httr2)
+library(tidyverse)
+library(httr)
 library(jsonlite)
 library(dotenv)
 ```
 
 ```{r}
-api_key <- "2jwArsQmT9WAKyUGCEHV14za7zDSg24S"
-
-#api_url <- "https://api.nytimes.com/svc/mostpopular/v2/emailed/7.json"
-api_url <- "https://api.nytimes.com/svc/mostpopular/v2/viewed/1.json"
-
-response <- GET(api_url, query = list(api_key = api_key))
+#load the api key in .env file
+api_key <- Sys.getenv("api_key")
 ```
 
 ```{r}
-if (http_status(test)$status == 200) {
+#set period separately to make it easy to adjust
+period <- 7
+
+url <- sprintf("https://api.nytimes.com/svc/mostpopular/v2/viewed/%d.json", period)
+
+response <- GET(url, query = list(`api-key` = api_key))
+
+#check status
+if (http_status(response)$category == "Success") {
   # Parse the JSON content
-  json_content <- content(response, "text")
-  
-  # Convert JSON to a data frame
-  dataframe <- fromJSON(json_content, flatten = TRUE)
-  
-  # Print or manipulate the data as needed
-  print(dataframe)
+  data <- content(response, "text") %>%
+    fromJSON(flatten = TRUE)
 } else {
-  # Print an error message if the request was not successful
-  print("Error fetching data from the API.")
+  #print error
+  stop("Error: Unable to retrieve data from the API.")
 }
 ```
+
 ```{r}
-api <- request(r"(https://api.nytimes.com/svc/mostpopular/v2/)") # We initialize a request object to our main API path
-req <- api %>%
-  req_url_path_append("emailed/7.json.json") %>% # This is the API pah we want to take to get bestsellers lists
-  req_url_query(`list` = "Combined Print and E-Book Nonfiction", `api-key` = key_get("APIKeys","NYtimes")) # We get the specific type of list we want and authenticate within the request query
-resp <- req %>%
-  req_perform()
-resp$status_code
+#convert to dataframe
+df <- as.data.frame(data)
 ```
+
+**Analyses**
+
+I had some basic questions I wanted to collect from the list of most viewed articles I collected. I asked and plotted their answers.
+
+
 ```{r}
-#usa_data <- fromJSON("https://api.nytimes.com/svc/topstories/v2/us.json?api-key=VhHaGQL7qb0A4ulIICuMg2M5JKNWijv5")
-#test <- fromJSON("https://api.nytimes.com/svc/mostpopular/v2/viewed/{period}.json?api-key=2jwArsQmT9WAKyUGCEHV14za7zDSg24S")
-api_key <- "2jwArsQmT9WAKyUGCEHV14za7zDSg24S"
-period <- 7  # Replace with the desired period
+#plot the NYT section the top 20 articles appear in
+ggplot(df, aes(x = results.section)) +
+  geom_bar(fill = "skyblue", color = "black") +
+  labs(title = "Frequency of Sections", x = "Section", y = "Frequency") +
+  theme_minimal() +
+  coord_flip()
+```
 
-url <- sprintf("https://api.nytimes.com/svc/mostpopular/v2/viewed/%d.json?api-key=%s", period, api_key)
+```{r}
+#plot the frequency of specific keywords
+df <- df %>%
+  mutate(keyword_appearance = grepl("Gaza|Israel", results.adx_keywords, ignore.case = TRUE))
 
-test <- fromJSON(url)
-
-dataframe <- as.data.frame(test)
+#create a barplot of the frequency of rows with 'Gaza' or 'Israel' in the keywords
+ggplot(df, aes(x = factor(keyword_appearance), fill = factor(keyword_appearance))) +
+  geom_bar() +
+  labs(title = "Frequency of 'Gaza' or 'Israel' in Keywords", x = "Israel/Gaza", y = "Frequency") +
+  scale_x_discrete(labels = c("Does Not Appear", "Appears")) +
+  scale_fill_manual(values = c("gray", "blue")) +  # Adjust the colors as needed
+  theme_minimal() +
+  guides(fill = FALSE)
 ```
 
