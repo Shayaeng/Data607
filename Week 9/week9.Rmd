@@ -1,0 +1,69 @@
+---
+title: "Week 9"
+author: "Shaya Engelman"
+date: "2023-11-03"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r }
+library(httr2)
+library(jsonlite)
+library(dotenv)
+```
+
+```{r}
+api_key <- "2jwArsQmT9WAKyUGCEHV14za7zDSg24S"
+
+#api_url <- "https://api.nytimes.com/svc/mostpopular/v2/emailed/7.json"
+api_url <- "https://api.nytimes.com/svc/mostpopular/v2/viewed/1.json"
+
+response <- GET(api_url, query = list(api_key = api_key))
+```
+
+```{r}
+if (http_status(test)$status == 200) {
+  # Parse the JSON content
+  json_content <- content(response, "text")
+  
+  # Convert JSON to a data frame
+  dataframe <- fromJSON(json_content, flatten = TRUE)
+  
+  # Print or manipulate the data as needed
+  print(dataframe)
+} else {
+  # Print an error message if the request was not successful
+  print("Error fetching data from the API.")
+}
+```
+```{r}
+api <- request(r"(https://api.nytimes.com/svc/mostpopular/v2/)") # We initialize a request object to our main API path
+req <- api %>%
+  req_url_path_append("emailed/7.json.json") %>% # This is the API pah we want to take to get bestsellers lists
+  req_url_query(`list` = "Combined Print and E-Book Nonfiction", `api-key` = key_get("APIKeys","NYtimes")) # We get the specific type of list we want and authenticate within the request query
+resp <- req %>%
+  req_perform()
+resp$status_code
+```
+```{r}
+#usa_data <- fromJSON("https://api.nytimes.com/svc/topstories/v2/us.json?api-key=VhHaGQL7qb0A4ulIICuMg2M5JKNWijv5")
+#test <- fromJSON("https://api.nytimes.com/svc/mostpopular/v2/viewed/{period}.json?api-key=2jwArsQmT9WAKyUGCEHV14za7zDSg24S")
+api_key <- "2jwArsQmT9WAKyUGCEHV14za7zDSg24S"
+period <- 7  # Replace with the desired period
+
+url <- sprintf("https://api.nytimes.com/svc/mostpopular/v2/viewed/%d.json?api-key=%s", period, api_key)
+
+test <- fromJSON(url)
+
+dataframe <- as.data.frame(test)
+```
+
