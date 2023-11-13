@@ -1,0 +1,290 @@
+---
+title: "Week 10"
+author: "Shaya Engelman"
+date: "2023-11-09"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Assignment Prompt
+
+In Text Mining with R, Chapter 2 looks at Sentiment Analysis. In this assignment, you should start by getting the primary example code from chapter 2 working in an R Markdown document. You should provide a citation to this base code. You're then asked to extend the code in two ways:
+
+<!-- -->
+
+-   Work with a different corpus of your choosing, and -
+
+-   Incorporate at least one additional sentiment lexicon (possibly from another R package that you've found through research).
+
+## Part One: Primary Example Code
+
+The following code is taken from chapter two of the book Text Mining in R by Julia Silge and David Robinson and can be found here: <https://www.tidytextmining.com/sentiment.html>
+
+```{r}
+#load Libraries
+library(tidytext)
+library(tidyverse)
+library(janeaustenr)
+```
+
+There are a variety of different sentiment lexicons that can be used for sentiment analysis. First I'll load three common lexicons used in the upcoming code.
+
+```{r}
+get_sentiments("afinn")
+get_sentiments("bing")
+get_sentiments("nrc")
+```
+
+Next, I'll create a dataframe with all the individual words from each of Jane Austen's books by book, linenumber and chapter. I'll get specific chapters by using a regular expression.
+
+```{r}
+tidy_books <- austen_books() %>%
+  group_by(book) %>%
+  mutate(
+    linenumber = row_number(),
+    chapter = cumsum(str_detect(text, 
+                                regex("^chapter [\\divxlc]", 
+                                      ignore_case = TRUE)))) %>%
+  ungroup() %>%
+  unnest_tokens(word, text)
+```
+
+Next, I'll plot the sentiment by book broken down by 80 line section. Using a section too small or too large can result in wrong estimates about sentiment. I'll do this using the bing lexicon mentioned above.
+
+```{r}
+#the following few lines are in the source code so I've included them but they are just for illustrative purposes
+
+#nrc_joy <- get_sentiments("nrc") %>% 
+#  filter(sentiment == "joy")
+
+
+#tidy_books %>%
+#  filter(book == "Emma") %>%
+#  inner_join(nrc_joy) %>%
+#  count(word, sort = TRUE)
+
+jane_austen_sentiment <- tidy_books %>%
+  inner_join(get_sentiments("bing")) %>%
+  count(book, index = linenumber %/% 80, sentiment) %>%
+  pivot_wider(names_from = sentiment, values_from = n, values_fill = 0) %>% 
+  mutate(sentiment = positive - negative)
+```
+
+```{r}
+ggplot(jane_austen_sentiment, aes(index, sentiment, fill = book)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~book, ncol = 2, scales = "free_x")
+```
+
+In the above plot we can see how the overall sentiment of each novel changes over time, with some happier chapters and some sadder ones.
+
+Now, I'll show how using different sentiment lexicons can vary the result we get. I'll do this by creating separate dataframes with the different lexicons and then bind them and plot them together. Doing this will easily allow us to see any differences that there are between the different lexicons. In order to minimize this exercise, I'll filter out just one book to use for this analysis. I'll use Pride and Prejudice.
+
+```{r}
+pride_prejudice <- tidy_books %>% 
+  filter(book == "Pride & Prejudice")
+```
+
+```{r}
+afinn <- pride_prejudice %>% 
+  inner_join(get_sentiments("afinn")) %>% 
+  group_by(index = linenumber %/% 80) %>% 
+  summarise(sentiment = sum(value)) %>% 
+  mutate(method = "AFINN")
+
+bing_and_nrc <- bind_rows(
+  pride_prejudice %>% 
+    inner_join(get_sentiments("bing")) %>%
+    mutate(method = "Bing et al."),
+  pride_prejudice %>% 
+    inner_join(get_sentiments("nrc") %>% 
+                 filter(sentiment %in% c("positive", 
+                                         "negative"))
+    ) %>%
+    mutate(method = "NRC")) %>%
+  count(method, index = linenumber %/% 80, sentiment) %>%
+  pivot_wider(names_from = sentiment,
+              values_from = n,
+              values_fill = 0) %>% 
+  mutate(sentiment = positive - negative)
+```
+
+```{r}
+bind_rows(afinn, 
+          bing_and_nrc) %>%
+  ggplot(aes(index, sentiment, fill = method)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~method, ncol = 1, scales = "free_y")
+```
+
+The above plot shows us the differences and similarities between the different lexicons. All three lexicons have the same overall ebbs and falls. This makes sense as they are all analyzing the same piece of literature. It does imply that they are all doing at least a decent job of analyzing the sentiment. Where they differ significantly, however, is in their ranges. All three have very different minimum and maximum ranges and have the overall plot shifted higher or lower on the plot. For example, the nrc lexicon has very few sections with a negative rating while the Bing lexicon has a much larger proportion with a negative rating. There are other important distinctions as well. Analyzing those differences is important in order to know which lexicon is the right one to use in each individual circumstance.
+
+In order to properly analyze our findings and to see if anything specific is impacting our results, I will plot a breakdown of the ten most common positive and negative words (thus having the biggest impact) used by the bing lexicon.
+
+```{r}
+bing_word_counts <- tidy_books %>%
+  inner_join(get_sentiments("bing")) %>%
+  count(word, sentiment, sort = TRUE) %>%
+  ungroup()
+
+bing_word_counts %>%
+  group_by(sentiment) %>%
+  slice_max(n, n = 10) %>% 
+  ungroup() %>%
+  mutate(word = reorder(word, n)) %>%
+  ggplot(aes(n, word, fill = sentiment)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~sentiment, scales = "free_y") +
+  labs(x = "Contribution to sentiment",
+       y = NULL)
+```
+
+The above plot shows how one negative word seems to be highly impacting the overall negative results. The word "miss" is categorized as a negative word by the bing lexicon. However, Austen uses it to refer to a young woman many times in the book.
+
+In order to remove "miss" from our analysis, we can add the word to the list of stop words already built in to the lexicon to let it know to skip those words.
+
+```{r}
+custom_stop_words <- bind_rows(tibble(word = c("miss"),  
+                                      lexicon = c("custom")), 
+                               stop_words)
+```
+
+##Part 2: Expanding the code
+
+I imported five different State of the Union addresses, all 10 years apart from each other. I want to see what the sentiment of the speech was in all five of those years and to see if any of the above three lexicons seem to have significantly different results or if they all show similar results.
+
+First, I will read in the texts of the five speeches and combine them into one dataframe. I have stored all of them on my GitHub repository:
+
+```{r}
+sotu2007 <- readLines("https://raw.githubusercontent.com/Shayaeng/Data607/main/Week10/Bush_2007.txt")
+sotu1997 <- readLines("https://raw.githubusercontent.com/Shayaeng/Data607/main/Week10/Clinton_1997.txt")
+sotu1987 <- readLines("https://raw.githubusercontent.com/Shayaeng/Data607/main/Week10/Reagan_1987.txt")
+sotu1977 <- readLines("https://raw.githubusercontent.com/Shayaeng/Data607/main/Week10/Ford_1977.txt")
+sotu1967 <- readLines("https://raw.githubusercontent.com/Shayaeng/Data607/main/Week10/Johnson_1967.txt")
+
+speeches <- bind_rows(   data.frame(year = 2007, text = sotu2007),   data.frame(year = 1997, text = sotu1997),   data.frame(year = 1987, text = sotu1987),   data.frame(year = 1977, text = sotu1977),   data.frame(year = 1967, text = sotu1967) )
+```
+
+Now, I'll tokenize them by word in order to run these three unigram based lexicons on.
+```{r}
+speeches_words <- speeches %>%
+  unnest_tokens(word, text)
+```
+
+Here we can see the sentiment of the 5 speeches using the afinn lexicon.
+```{r}
+afinn <- speeches_words %>% 
+  inner_join(get_sentiments("afinn")) %>% 
+  group_by(year) %>% 
+  summarise(sentiment = sum(value)) %>% 
+  mutate(method = "AFINN")
+
+# Compare the sentiment scores
+(afinn)
+```
+ We can visualize the above using ggplot:
+```{r}
+ggplot(afinn, aes(x = year, y = sentiment)) +
+  geom_col(fill = "steelblue") +
+  labs(title = "Average Sentiment Score for State of the Union Speeches",
+       x = "Year",
+       y = "Sentiment Score") +
+  scale_x_continuous(breaks = afinn$year)
+```
+The above plot shows us th overall sentiment at the State of the Union Address in those given years. The speech in 1987 seems to be by far the most negative speech. I will return to that a bit later.
+
+Next, I ran the other two lexicons from above and comapred their output to see if there any obvious differences.
+
+```{r}
+bing <- speeches_words %>%
+  inner_join(get_sentiments("bing")) %>%
+  count(year = year, sentiment) %>%
+  pivot_wider(names_from = sentiment, values_from = n, values_fill = 0) %>% 
+  mutate(sentiment = positive - negative) %>%
+  mutate(method = "Bing")
+nrc <- speeches_words %>%
+  inner_join(get_sentiments("nrc") %>% 
+                filter(sentiment %in% c("positive", "negative"))) %>%
+  count(year = year, sentiment) %>%
+  pivot_wider(names_from = sentiment, values_from = n, values_fill = 0) %>% 
+  mutate(sentiment = positive - negative) %>%
+  mutate(method = "NRC")
+
+combined_data <- bind_rows(nrc, bing, afinn)
+
+combined_data %>%
+  ggplot(aes(x = year, y = sentiment, fill = method)) +
+  geom_col() +
+  labs(title = "Average Sentiment Score for State of the Union Speeches",
+       x = "Year",
+       y = "Sentiment Score") +
+  facet_wrap(~method, scales = "free_y") +
+  scale_x_continuous(breaks = unique(combined_data$year))
+```
+While there are differences between the three different lexicons, they all show the same overall trends. 1987 is the most negative speech in all three lexicons by a significan tmargin while 1997 had the most positive speech in all three lexicons. This matches up with our analysis in Part 1, where we saw differences between the three lexicons but the same overall trends.
+
+I was curious if the reason the 1987 address was so much more negative relative to the others was due to a spefifc word measured wrongly due to being a more commonly used word at the time. In order to check that, I ran similar code as in Part 1 to see the top 10 negative and positive words.
+
+```{r}
+bing_word_counts1 <- speeches_words %>%
+  filter(year == 1987) %>%
+  inner_join(get_sentiments("bing")) %>%
+  count(word, sentiment, sort = TRUE) %>%
+  ungroup()
+
+bing_word_counts1 %>%
+  group_by(sentiment) %>%
+  slice_max(n, n = 10) %>% 
+  ungroup() %>%
+  mutate(word = reorder(word, n)) %>%
+  ggplot(aes(n, word, fill = sentiment)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~sentiment, scales = "free_y") +
+  labs(x = "Contribution to sentiment",
+       y = NULL)
+```
+While I only asked ggplot to plot the 10 most common words, that isn't what I got. In both the positive and negative plots, my output was more than the 10 I requested. The reason for that was due to there being a tie in the top 10. The sheer amount of words tying in the negative column disproves my theory about one word impacting the analysis too much. I must conclude that the contents of the address was indeed much more negative than the other years.
+
+
+The NRC lexicon has a variety of different sentiments it measures in addition to positive and negative. I will later include a plot with all of them. What I wanted to do next was use the NRC lexicon to analyze the relationship between the trust sentiment relative to the fear sentiment and see if there is a relationship between that and the positive/negative sentiment.
+
+```{r}
+nrc_trust <- speeches_words %>%
+  inner_join(get_sentiments("nrc") %>% 
+                filter(sentiment %in% c("trust", "fear"))) %>%
+  count(year = year, sentiment) %>%
+  pivot_wider(names_from = sentiment, values_from = n, values_fill = 0) %>% 
+  mutate(sentiment = trust - fear) %>%
+  mutate(method = "NRC")
+
+ggplot(nrc_trust, aes(x = year, y = sentiment)) +
+  geom_col(fill = "navy", width = 3) +
+  labs(title = "Average Trust Score for State of the Union Speeches",
+       x = "Year",
+       y = "Trust Score") +
+  scale_x_continuous(breaks = nrc_trust$year)
+```
+Based on the above plot, I do not think there is any relationship between the two sets of sentiments I analyzed. While 1987 had the lowest score in both plots there doesn't seem to be any overall trends based on the other plot. The only trend I would analyze further is whether the overall trust is declining over time regardless of other topics mentioned in the State of the Union address. Further research would be necessary.
+
+Just for completion's sake, I included a plot of the 10 words most contributing to each of the eight emotions measured by the NRC lexicon. Something noteworthy of the below plot is the disproportionate effect the word "congress" has on the disgust sentiment. For obvious reasons, the word congress will appear many times in an address to congress. If that gets classified as a word that implies disgust, there will be a much higher sentiment of disgust represented than there is in reality. The solution can be to add the word congress to a list of custom stop words as discussed in Part 1.
+```{r}
+nrc_word_counts <- speeches_words %>%
+  inner_join(get_sentiments("nrc")) %>%
+  count(word, sentiment, sort = TRUE) %>%
+  ungroup()
+
+nrc_word_counts %>%
+  group_by(sentiment) %>%
+  slice_max(n, n = 10) %>% 
+  ungroup() %>%
+  mutate(word = reorder(word, n)) %>%
+  ggplot(aes(n, word, fill = sentiment)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~sentiment, scales = "free_y") +
+  labs(x = "Contribution to sentiment",
+       y = NULL)
+```
+
