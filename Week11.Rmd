@@ -1,0 +1,79 @@
+---
+title: "Spotify Recommender System"
+author: "Shaya Engelman"
+date: "2023-11-19"
+output: pdf_document
+editor_options: 
+  markdown: 
+    wrap: sentence
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Assignment Prompt
+
+1.  Perform a Scenario Design analysis as described below.
+     Consider whether it makes sense for your selected recommender system to perform scenario design twice, once for the organization (e.g. Amazon.com) and once for the organization's customers.
+
+2.  Attempt to reverse engineer what you can about the site, from the site interface and any available information that you can find on the Internet or elsewhere.
+
+3.  Include specific recommendations about how to improve the site's recommendation capabilities going forward. 
+
+## Spotify's Recommender System
+
+The purpose of this report is to conduct a Scenario Design analysis of Spotify's recommender system, particularly, the music segment as opposed to podcasts.
+Spotify, employs a sophisticated recommendation engine to enhance user experience and engagement.
+This analysis aims to understand the current system, identify stakeholders, and propose recommendations for both the organization (Spotify) and its customers (users).
+
+Recommender systems are algorithms designed to recommend content to users.
+There are a variety of techniques different systems can utilize.
+Spotify's recommender system utilizes a combination of collaborative filtering, content-based filtering, and machine learning algorithms.
+Collaborative filtering entails using information gleaned from other users to recommend content to the user, such as other songs liked by users who share some liked songs with the user.
+Content-based filtering entails analyzing the user's liked content and finding other similar content on the platform.
+This analysis involves artist-sourced metadata, listening to the 'feel' of the music (slow, fast etc.) and using natural language processing (NLP) to analyze the text of the song.
+
+Spotify's primary business goals related to the recommender system include improving user satisfaction, increasing user engagement, and obtaining and retaining paid subscribers.
+The recommender system plays a crucial role in delivering personalized content to users.
+
+There are multiple parties invested in Spotify's recommender system.
+First and most obviously are the listeners.
+The act of listening to music has shifted from individuals meticulously selecting a particular album or song for enjoyment to a more convenient experience of choosing a playlist and finding satisfaction in the majority of the newly discovered songs.
+In order to acheive that, a good recommender system is necessary.
+Aside from the listeners, the music creators have an interest in the systems too.
+The creators get paid based on the amount of listens their content gets; a system that introduces their music to potential fans benefits them as well.
+
+**Reverse Engineering:**
+
+Exploring the Spotify app interface reveals how recommendations are presented to users, including recommending similar artists, personalized playlists, radio stations, and the popular "Discover" feature.
+Understanding the user experience is vital for proposing improvements.
+
+![Some of the ways Spotify recommends content (I clearly have a toddler at home)](images/Screenshot 2023-11-21 212707-02.png)
+
+Upon creating a new account, Spotify prompts the user for some favorite artists and songs.
+The app also makes it easy to 'like' a song.
+Both of these features help Spotify create the tailored recommendations.
+
+**Recommendations:**
+
+**For Spotify (Organization)**:
+
+*Algorithmic Improvements:*
+
+-   Genre and Mood Enhancement: suggest improvements to content-based filtering by refining the understanding of music genres, moods, and contextual factors.
+
+-   User Engagement Features: Propose introducing features that encourage user engagement, such as personalized playlists for special occasions or collaborative playlists with friends.
+
+-   Feedback Mechanism: Implement a direct and user-friendly feedback mechanism, enabling users to provide explicit feedback on individual songs or playlists.
+
+**For Spotify Users (Customers):**
+
+-   Encourage users to provide more detailed preferences, including favorite genres, artists, and moods.
+    Allow customization of profiles to reflect changes in music taste.
+
+-   Artists should clearly label all the metadata of their content, such as the genre and label of the song.
+
+In conclusion, this Scenario Design analysis of Spotify's recommender system provides valuable insights for both the organization and its users.
+By implementing the recommended improvements, Spotify can enhance user satisfaction, increase engagement, and maintain its position as a leading music streaming platform.
+Regular iterations based on user feedback and evolving listening patterns will be key to the ongoing success of the recommender system.
