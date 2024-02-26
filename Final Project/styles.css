@@ -1,0 +1,17 @@
+/* styles.css */
+
+/* Adjusting the font size for slide titles */
+h1 {
+    font-size: 36pt; /* Change the font size as needed */
+  }
+  
+  /* Adjusting the font size for slide content */
+  p {
+    font-size: 24pt; /* Change the font size as needed */
+  }
+  
+  /* Adjusting the font size for other elements, e.g., code */
+  code, pre {
+    font-size: 18pt; /* Change the font size as needed */
+  }
+  

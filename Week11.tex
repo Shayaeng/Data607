@@ -1,0 +1,193 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={Spotify Recommender System},
+  pdfauthor={Shaya Engelman},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{Spotify Recommender System}
+\author{Shaya Engelman}
+\date{2023-11-19}
+
+\begin{document}
+\maketitle
+
+\hypertarget{assignment-prompt}{%
+\subsection{Assignment Prompt}\label{assignment-prompt}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Perform a Scenario Design analysis as described below. ~Consider
+  whether it makes sense for your selected recommender system to perform
+  scenario design twice, once for the organization (e.g.~Amazon.com) and
+  once for the organization's customers.
+\item
+  Attempt to reverse engineer what you can about the site, from the site
+  interface and any available information that you can find on the
+  Internet or elsewhere.
+\item
+  Include specific recommendations about how to improve the site's
+  recommendation capabilities going forward.~
+\end{enumerate}
+
+\hypertarget{spotifys-recommender-system}{%
+\subsection{Spotify's Recommender
+System}\label{spotifys-recommender-system}}
+
+The purpose of this report is to conduct a Scenario Design analysis of
+Spotify's recommender system, particularly, the music segment as opposed
+to podcasts. Spotify, employs a sophisticated recommendation engine to
+enhance user experience and engagement. This analysis aims to understand
+the current system, identify stakeholders, and propose recommendations
+for both the organization (Spotify) and its customers (users).
+
+Recommender systems are algorithms designed to recommend content to
+users. There are a variety of techniques different systems can utilize.
+Spotify's recommender system utilizes a combination of collaborative
+filtering, content-based filtering, and machine learning algorithms.
+Collaborative filtering entails using information gleaned from other
+users to recommend content to the user, such as other songs liked by
+users who share some liked songs with the user. Content-based filtering
+entails analyzing the user's liked content and finding other similar
+content on the platform. This analysis involves artist-sourced metadata,
+listening to the `feel' of the music (slow, fast etc.) and using natural
+language processing (NLP) to analyze the text of the song.
+
+Spotify's primary business goals related to the recommender system
+include improving user satisfaction, increasing user engagement, and
+obtaining and retaining paid subscribers. The recommender system plays a
+crucial role in delivering personalized content to users.
+
+There are multiple parties invested in Spotify's recommender system.
+First and most obviously are the listeners. The act of listening to
+music has shifted from individuals meticulously selecting a particular
+album or song for enjoyment to a more convenient experience of choosing
+a playlist and finding satisfaction in the majority of the newly
+discovered songs. In order to acheive that, a good recommender system is
+necessary. Aside from the listeners, the music creators have an interest
+in the systems too. The creators get paid based on the amount of listens
+their content gets; a system that introduces their music to potential
+fans benefits them as well.
+
+\textbf{Reverse Engineering:}
+
+Exploring the Spotify app interface reveals how recommendations are
+presented to users, including recommending similar artists, personalized
+playlists, radio stations, and the popular ``Discover'' feature.
+Understanding the user experience is vital for proposing improvements.
+
+\begin{figure}
+\centering
+\includegraphics{images/Screenshot 2023-11-21 212707-02.png}
+\caption{Some of the ways Spotify recommends content (I clearly have a
+toddler at home)}
+\end{figure}
+
+Upon creating a new account, Spotify prompts the user for some favorite
+artists and songs. The app also makes it easy to `like' a song. Both of
+these features help Spotify create the tailored recommendations.
+
+\textbf{Recommendations:}
+
+\textbf{For Spotify (Organization)}:
+
+\emph{Algorithmic Improvements:}
+
+\begin{itemize}
+\item
+  Genre and Mood Enhancement: suggest improvements to content-based
+  filtering by refining the understanding of music genres, moods, and
+  contextual factors.
+\item
+  User Engagement Features: Propose introducing features that encourage
+  user engagement, such as personalized playlists for special occasions
+  or collaborative playlists with friends.
+\item
+  Feedback Mechanism: Implement a direct and user-friendly feedback
+  mechanism, enabling users to provide explicit feedback on individual
+  songs or playlists.
+\end{itemize}
+
+\textbf{For Spotify Users (Customers):}
+
+\begin{itemize}
+\item
+  Encourage users to provide more detailed preferences, including
+  favorite genres, artists, and moods. Allow customization of profiles
+  to reflect changes in music taste.
+\item
+  Artists should clearly label all the metadata of their content, such
+  as the genre and label of the song.
+\end{itemize}
+
+In conclusion, this Scenario Design analysis of Spotify's recommender
+system provides valuable insights for both the organization and its
+users. By implementing the recommended improvements, Spotify can enhance
+user satisfaction, increase engagement, and maintain its position as a
+leading music streaming platform. Regular iterations based on user
+feedback and evolving listening patterns will be key to the ongoing
+success of the recommender system.
+
+\end{document}

@@ -15,7 +15,7 @@ library(dplyr)
 library(stringr)
 library(tidyverse)
 ```
-For my first dataset I chose a file that contains contains participation and cost data for SNAP. The data is furthered divided by annual, state, and monthly levels categorized by persons participating, households participating, benefits provided, average monthly benefits per person and average monthly benefits per household. I am going to see if there is a relationship between the average amount per person and the total amount of participants. I found this information on data.world as an excel file that I downloaded and saved as a csv file to my GitHub repository.
+For my first dataset I chose a file that contains participation and cost data for SNAP. The data is further divided by annual, state, and monthly levels categorized by persons participating, households participating, benefits provided, average monthly benefits per person and average monthly benefits per household. I am going to see if there is a relationship between the average amount per person and the total amount of participants. I found this information on data.world as an excel file that I downloaded and saved as a csv file to my GitHub repository.
 
 This information is meaningful to me as my wife is a dietitian and I often hear about the major impact finances has on people's nutrition decisions.
 ```{r}

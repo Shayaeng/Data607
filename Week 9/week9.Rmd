@@ -25,6 +25,7 @@ library(dotenv)
 
 ```{r}
 #load the api key in .env file
+load_dot_env()
 api_key <- Sys.getenv("api_key")
 ```
 

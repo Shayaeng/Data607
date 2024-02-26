@@ -298,6 +298,22 @@ With the identified flaws from the previous analysis successfully addressed, the
 
 ## Limitations
 
+::: columns
+
+::: column
+- Point 1
+- Point 2
+- Point 3
+:::
+
+::: column
+- Point A
+- Point B
+- Point C
+:::
+
+::: columns
+
 In presenting our findings, it's imperative to acknowledge the limitations that accompany our analysis. While we have established a robust correlation between the expansion of bike paths and increased bike usage, caution is warranted in inferring a causal relationship. This study focuses on one specific metric; total miles of bike paths. It does not factor in many other aspects that could impact bike usage. Social considerations, including public perceptions of safety, community engagement, and local policies, are all factors that can impact bicycle usage.
 
 Another significant limitation to consider is that the study's outcomes may be influenced by the specific time frame considered, and variations in bike usage patterns or infrastructure expansion over time might not be fully captured. Moreover, the regional specificity of our findings should be emphasized. The correlation observed is specific to NYC, and caution should be exercised when generalizing these results to different geographic or cultural contexts. Social dynamics, such as community preferences, socioeconomic disparities, and cultural attitudes towards biking, are inherently complex and challenging to quantify comprehensively.
